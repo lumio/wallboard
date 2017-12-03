@@ -1,24 +1,21 @@
 wallboard
 =========
 
+**Whoups! You are a little early. This is going to be an npm package. So
+hold tight** :simple_smile:
+
 Example `config.json` file
 
 ```
 {
-  "screens": [
-    {
-      "type": "jenkins",
-      "url": "https://jenkins",
-      "options": {
-        "whitelist": "keyword1|keyword2",
-        "filter": "keyword1|keyword2"
-      }
-    },
-    {
-      "type": "iframe",
-      "url": "http://address"
+  "ci": {
+    "type": "jenkins",
+    "url": "https://jenkins",
+    "options": {
+      "whitelist": "keyword1|keyword2",
+      "filter": "keyword1|keyword2"
     }
-  ]
+  }
 }
 ```
 
