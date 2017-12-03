@@ -15,11 +15,19 @@ const pulseKeyframes = keyframes`
 
 export const ScreenBuildJobStyled = styled.div`
   min-width: 25vw;
-  width: 100%;
   border-radius: .25em;
   margin-bottom: .75em;
   padding: 1em;
   transition: transform .25s ease, background .5s, box-shadow .5s;
+
+  ${ ( props : ScreenBuildJobStyledPropsType ) => (
+    props.extraMargin ? `
+      width: calc( 100% - 1em - 4px );
+      margin-left: calc( .5em + 2px );
+    ` : `
+      width: 100%;
+    `
+  ) }
 
   ${ ( props : ScreenBuildJobStyledPropsType ) => {
     const baseColor = ( () => {

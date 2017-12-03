@@ -8,6 +8,7 @@ const ScreenBuildJob : React.StatelessComponent<any> = ( props : any ) => {
   return (
     <ScreenBuildJobStyled
       { ...job }
+      extraMargin={ props.extraMargin }
     >
       <div className='job-status'>{ job.building ? 'building' : 'idle' }</div>
       <div className='job-name-container'>

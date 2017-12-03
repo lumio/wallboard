@@ -7,6 +7,8 @@ interface ScreenBuildJobStyledPropsType {
   health : number;
   lastBuildFailed : boolean;
   lastBuildSucceeded : boolean;
+
+  extraMargin? : boolean;
 }
 
 export {
