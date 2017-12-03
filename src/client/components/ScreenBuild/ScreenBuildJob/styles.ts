@@ -1,7 +1,21 @@
 import styled, { keyframes } from 'styled-components';
 import * as polished from 'polished';
 import colors from '../../../colors';
-import { ScreenBuildJobStyledPropsType } from './types';
+import {
+  ScreenBuildJobStyledPropsType,
+  ScreenBuildJobProgressStyledPropsType,
+} from './types';
+
+const getBaseColor = ( props : any ) => {
+  if ( !props.enabled ) {
+    return colors.gray;
+  }
+  else if ( props.lastBuildFailed || props.status === 'failed' ) {
+    return colors.red;
+  }
+
+  return polished.mix( props.health / 100, colors.green, colors.red );
+};
 
 const pulseKeyframes = keyframes`
   from {
@@ -13,12 +27,67 @@ const pulseKeyframes = keyframes`
   }
 `;
 
-export const ScreenBuildJobStyled = styled.div`
+const ScreenBuildJobProgressStyled = styled.div`
+  border-radius: .25em;
+  overflow: hidden;
+  position: relative;
+
+  transition: height .5s ease, opacity .25s, margin .5s ease, box-shadow .25s;
+  ${ ( props : ScreenBuildJobProgressStyledPropsType ) => (
+    props.visible ? `
+      opacity: 1;
+      height: 1em;
+      margin-top: .5em;
+      box-shadow: .1em .1em 1em rgba( 0, 0, 0, .1 );
+    ` : `
+      opacity: 0;
+      height: 0;
+      margin-top: 0;
+      box-shadow: none;
+    `
+  ) }
+
+  ${ ( props : ScreenBuildJobProgressStyledPropsType ) => {
+    const baseColor = getBaseColor( props );
+    const progressBaseColor = polished.tint( .85, polished.lighten( .1, baseColor ) );
+    return `
+      background: ${ polished.shade( .6, baseColor ) };
+
+      &::before {
+        content: '';
+        display: block;
+        height: 1em;
+        background: ${ progressBaseColor };
+        width: ${ props.progress }%;
+        transition: width .5s ease-out;
+      }
+
+      &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 1em;
+        box-shadow: 0 0 1em rgba( 0, 0, 0, .15 ) inset;
+      }
+    `;
+  } }
+`;
+
+const ScreenBuildJobStyled = styled.div`
   min-width: 25vw;
   border-radius: .25em;
   margin-bottom: .75em;
   padding: 1em;
+  transform: scale( 1 );
   transition: transform .25s ease, background .5s, box-shadow .5s;
+
+  small {
+    opacity: .6;
+    font-weight: bold;
+  }
 
   ${ ( props : ScreenBuildJobStyledPropsType ) => (
     props.extraMargin ? `
@@ -30,16 +99,7 @@ export const ScreenBuildJobStyled = styled.div`
   ) }
 
   ${ ( props : ScreenBuildJobStyledPropsType ) => {
-    const baseColor = ( () => {
-      if ( !props.enabled ) {
-        return colors.gray;
-      }
-      else if ( props.lastBuildFailed || props.status === 'failed' ) {
-        return colors.red;
-      }
-
-      return polished.mix( props.health / 100, colors.green, colors.red );
-    } )();
+    const baseColor = getBaseColor( props );
     let color = baseColor;
 
     if ( props.building ) {
@@ -145,12 +205,12 @@ export const ScreenBuildJobStyled = styled.div`
     `;
   } }
 
-  .job-status {
-    display: none;
-  }
-
-
   ${ ( props : ScreenBuildJobStyledPropsType ) => props.building ? `
     animation: ${ pulseKeyframes } 2s ease-in-out infinite alternate;
   ` : '' }
 `;
+
+export {
+  ScreenBuildJobStyled,
+  ScreenBuildJobProgressStyled,
+};
