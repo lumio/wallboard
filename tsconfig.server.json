@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "bin/server",
+    "module": "commonjs",
+    "rootDir": "src/server",
+    "allowJs": false,
+    "strict": true,
+    "noUnusedParameters": false,
+    "noUnusedLocals": false,
+    "noFallthroughCasesInSwitch": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "exclude": [
+    "node_modules",
+    "build",
+    "scripts",
+    "acceptance-tests",
+    "webpack",
+    "jest",
+    "src/client",
+    "src/setupTests.ts"
+  ]
+}
