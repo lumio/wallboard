@@ -1,7 +1,10 @@
 {
   "name": "wallboard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "GPL-3.0",
+  "bin": {
+    "wallboard": "wallboard.js"
+  },
   "dependencies": {
     "express": "^4.16.2",
     "fs-extra": "^4.0.2",
