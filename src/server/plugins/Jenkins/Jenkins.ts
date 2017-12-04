@@ -50,6 +50,7 @@ export default class PluginJenkins extends EventEmitter {
 
     this.url = url;
     this.cron = CronWorker;
+    this.config = config;
     this.collection = Immutable.fromJS( {
       type: 'folder',
       name: '',
@@ -243,6 +244,26 @@ export default class PluginJenkins extends EventEmitter {
     return this.collection.getIn( reference );
   }
 
+  private isJobAllowed( name : string ) {
+    const whitelist = typeof this.config.whitelist === 'string' ? [ this.config.whitelist ] : this.config.whitelist || [];
+    const blacklist = typeof this.config.blacklist === 'string' ? [ this.config.blacklist ] : this.config.blacklist || [];
+    const lowerName = name.toLowerCase();
+
+    for ( const pattern of whitelist ) {
+      if ( lowerName.indexOf( pattern.toLowerCase() ) === -1 ) {
+        return false;
+      }
+    }
+
+    for ( const pattern of blacklist ) {
+      if ( lowerName.indexOf( pattern.toLowerCase() ) === -1 ) {
+        return true;
+      }
+    }
+
+    return true;
+  }
+
   private processJobs( data : any, config : any ) {
     const reference = [ ...config.data.reference ];
     reference.push( 'jobs' );
@@ -264,6 +285,10 @@ export default class PluginJenkins extends EventEmitter {
 
     // Add fetch job to new jobs
     for ( const name of newJobNames ) {
+      if ( !this.isJobAllowed( name ) ) {
+        continue;
+      }
+
       if ( !formerJobList[ name ] ) {
         const jobItem = newJobList[ name ];
         const item = {
