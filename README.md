@@ -10,14 +10,9 @@ Example `config.json` file
 
 ```
 {
-  "ci": {
-    "type": "jenkins",
-    "url": "https://jenkins",
-    "options": {
-      "whitelist": "keyword1|keyword2",
-      "filter": "keyword1|keyword2"
-    }
-  }
+  "ci": "https://jenkins",
+  "whitelist": "keyword1|keyword2",
+  "filter": "keyword1|keyword2"
 }
 ```
 
