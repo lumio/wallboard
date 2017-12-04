@@ -1,11 +1,6 @@
 wallboard
 =========
 
-**Whoups! You are a little early. This is going to be an npm package. So
-hold tight** 🙃
-
----
-
 Example `config.json` file
 
 ```
