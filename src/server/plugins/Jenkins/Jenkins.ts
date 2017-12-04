@@ -277,7 +277,7 @@ export default class PluginJenkins extends EventEmitter {
     // Remove stale jobs
     for ( const name of formerJobNames ) {
       if ( !newJobList[ name ] ) {
-        this.removeJob( formerJobList[ name ], reference );
+        this.removeJob( formerJobList[ name ] );
       }
     }
 
