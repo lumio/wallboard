@@ -4,6 +4,9 @@ const lastTimers : { [ key : string ] : number } = {};
 let logInterval : any;
 
 function iterateTimers() {
+  if ( !process.env.LOG_TIMERS ) {
+    return;
+  }
   if ( process.env.LOG_TIMERS_EXCLUSIVELY ) {
     charm.reset();
   }
@@ -38,7 +41,7 @@ function initLog() {
 
   charm.pipe( process.stdout );
   logInterval = setInterval( () => {
-    // iterateTimers();
+    iterateTimers();
   }, 1000 );
 }
 

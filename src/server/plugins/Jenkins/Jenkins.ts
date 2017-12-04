@@ -165,8 +165,6 @@ export default class PluginJenkins extends EventEmitter {
     const currentBuildInfoReference = [ ...config.data.reference, 'build' ];
     const currentBuildInfoMap = this.collection.getIn( currentBuildInfoReference )
     const currentBuildInfo = currentBuildInfoMap ? currentBuildInfoMap.toJS() : null;
-    const isCurrentBuildInfoAvailable = currentBuildInfo && currentBuildInfo.number;
-    const isLastBuildInfoAvailable = data.lastBuild && data.lastBuild.number;
     const watching = currentBuildInfo ? currentBuildInfo.watching : false;
 
     if (
@@ -310,7 +308,7 @@ export default class PluginJenkins extends EventEmitter {
     this.collection = this.collection.setIn( [ ...item.data.reference, 'url' ], url );
   }
 
-  private removeJob( data : any, reference? : string[] ) {
+  private removeJob( data : any ) {
     this.cron.remove( data.url );
   }
 

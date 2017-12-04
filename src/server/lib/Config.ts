@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as minimist from 'minimist';
+import * as stripJsonComments from 'strip-json-comments';
 
 const args = minimist( process.argv.slice( 1 ) );
 const mandatoryProperties = {
@@ -34,7 +35,7 @@ class Config {
     const raw = fs.readFileSync( configFile, { encoding: 'utf-8' } );
     let config = {};
     try { 
-      config = JSON.parse( raw );
+      config = JSON.parse( stripJsonComments( raw ) );
     }
     catch ( e ) {
       console.error( `Error loading ${ configFile }:` );
