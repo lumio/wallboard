@@ -1,6 +1,22 @@
 wallboard
 =========
 
+Install `wallboard` globally using
+
+```
+yarn global add wallboard
+# or
+npm i -g wallboard
+```
+
+Run it using
+
+```
+wallboard -c config.json
+```
+
+---
+
 Example `config.json` file
 
 ```
@@ -11,7 +27,3 @@ Example `config.json` file
 }
 ```
 
----
-
-Build the package with `yarn build`, add `config.json`
-and start server with `yarn server`
