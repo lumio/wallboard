@@ -42,7 +42,7 @@ class App extends React.Component<{}, AppStateType> {
   }
 
   componentDidMount() {
-    this.socket = new WebSocket( 'ws://localhost:5000' );
+    this.socket = new WebSocket( 'ws://' + window.location.host );
     this.socket.onmessage = ( event ) => {
       try {
         const data = JSON.parse( event.data );
