@@ -1,3 +1,4 @@
+import * as path from 'path';
 import * as express from 'express';
 import * as http from 'http';
 import * as WebSocket from 'ws';
@@ -16,6 +17,7 @@ const jenkins = new PluginJenkins( config.ci, {
 } );
 
 const app = express();
+app.use( '/', express.static( path.join( __dirname, '/../build' ) ) );
 const server = http.createServer( app );
 
 const wss = new WebSocket.Server( { server } );
@@ -31,7 +33,7 @@ jenkins.on( 'change', ( data ) => {
   broadcast( JSON.stringify( { type: 'change', data } ) );
 } );
 
-jenkins.on( 'build-status', ( type: 'build-status', name, building, status ) => {
+jenkins.on( 'build-status', ( name, building, status ) => {
   broadcast( JSON.stringify( { name, building, status } ) );
 } );
 
@@ -48,7 +50,6 @@ wss.on( 'connection', ( ws : WebSocket ) => {
 
   ws.send( JSON.stringify( { type: 'change', data: jenkins.get() } ) );
 } );
-
 
 server.listen( process.env.PORT || 5000, () => {
   console.log( `Server started on port ${ server.address().port }` );
