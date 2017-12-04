@@ -6,10 +6,14 @@ if ( process.env.NODE_ENV === 'development' ) {
   process.on( 'unhandledRejection', r => console.log( r ) );
 }
 
+import Config from './lib/Config';
 import PluginJenkins from './plugins/Jenkins';
 
-const jenkinsUrl = 'fix me';
-const jenkins = new PluginJenkins( jenkinsUrl );
+const config = Config.load();
+const jenkins = new PluginJenkins( config.ci, {
+  whitelist: config.whitelist,
+  blacklist: config.blacklist,
+} );
 
 const app = express();
 const server = http.createServer( app );

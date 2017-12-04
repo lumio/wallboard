@@ -6,7 +6,10 @@ import { URL } from 'url';
 import * as Immutable from 'immutable';
 import * as EventEmitter from 'events';
 
-import { JenkinsJobInfoType } from './types';
+import {
+  JenkinsConfigType,
+  JenkinsJobInfoType,
+} from './types';
 import CronWorker from '../../lib/CronWorker';
 
 import LogTimers from '../../lib/LogTimers';
@@ -40,8 +43,9 @@ export default class PluginJenkins extends EventEmitter {
   baseUrlObject : URL;
   cron : any;
   collection : Immutable.Map<string, any>;
+  config : JenkinsConfigType;
 
-  constructor( url : string ) {
+  constructor( url : string, config : JenkinsConfigType ) {
     super();
 
     this.url = url;

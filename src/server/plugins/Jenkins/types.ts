@@ -1,4 +1,9 @@
-export interface JenkinsJobType {
+interface JenkinsConfigType {
+  whitelist? : string | string[];
+  blacklist? : string | string[];
+}
+
+interface JenkinsJobType {
   type : 'job' | 'folder';
   name : string;
   url : string;
@@ -6,7 +11,7 @@ export interface JenkinsJobType {
   jobs? : { [ name : string ] : JenkinsJobType };
 }
 
-export interface JenkinsJobInfoType {
+interface JenkinsJobInfoType {
   building? : boolean;
   enabled? : boolean;
   name? : string;
@@ -18,3 +23,9 @@ export interface JenkinsJobInfoType {
   lastBuildSucceeded? : boolean;
   type: 'job' | 'folder',
 }
+
+export {
+  JenkinsConfigType,
+  JenkinsJobType,
+  JenkinsJobInfoType,
+};
