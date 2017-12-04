@@ -11,8 +11,8 @@ Example `config.json` file
 ```
 {
   "ci": "https://jenkins",
-  "whitelist": "keyword1|keyword2",
-  "filter": "keyword1|keyword2"
+  "whitelist": [ "pattern1", "pattern2" ],
+  "filter": [ "pattern2" ]
 }
 ```
 
