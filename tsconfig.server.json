@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "bin/server",
+    "outDir": "build",
     "module": "commonjs",
     "rootDir": "src/server",
     "allowJs": false,

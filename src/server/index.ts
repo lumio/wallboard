@@ -17,7 +17,7 @@ const jenkins = new PluginJenkins( config.ci, {
 } );
 
 const app = express();
-app.use( '/', express.static( path.join( __dirname, '/../build' ) ) );
+app.use( '/', express.static( path.join( __dirname, './static' ) ) );
 const server = http.createServer( app );
 
 const wss = new WebSocket.Server( { server } );

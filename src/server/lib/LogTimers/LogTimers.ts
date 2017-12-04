@@ -46,7 +46,7 @@ function initLog() {
 }
 
 export default function LogTimers( key : string ) {
-  if ( process.env.NODE_ENV === 'development' ) {
+  if ( process.env.NODE_ENV === 'development' || process.env.LOG_TIMERS ) {
     initLog();
     lastTimers[ key ] = Date.now();
   }
