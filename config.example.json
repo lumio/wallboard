@@ -1,16 +1,5 @@
 {
-  "screens": [
-    {
-      "type": "jenkins",
-      "url": "https://jenkins",
-      "options": {
-        "whitelist": "keyword1|keyword2",
-        "filter": "keyword1|keyword2"
-      }
-    },
-    {
-      "type": "iframe",
-      "url": "http://address"
-    }
-  ]
+  "ci": "https://jenkins",
+  "whitelist": [ "pattern1", "pattern2" ],
+  "filter": [ "pattern2" ]
 }
