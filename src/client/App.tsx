@@ -11,6 +11,9 @@ interface AppStateType {
   data? : any;
 }
 
+const wsAddress = ( process.env.NODE_ENV && process.env.NODE_ENV === 'development' )
+  ? 'ws://localhost:5000' : 'ws://' + window.location.host;
+
 const AppStyled = styled.div`
   &.error {
     padding: 2em;
@@ -42,7 +45,7 @@ class App extends React.Component<{}, AppStateType> {
   }
 
   componentDidMount() {
-    this.socket = new WebSocket( 'ws://' + window.location.host );
+    this.socket = new WebSocket( wsAddress );
     this.socket.onmessage = ( event ) => {
       try {
         const data = JSON.parse( event.data );
