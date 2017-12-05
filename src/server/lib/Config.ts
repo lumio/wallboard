@@ -11,7 +11,7 @@ const mandatoryProperties = {
 class Config {
   load() : any {
     const config = this.readConfigFile();
-    const mandatoryKeys = Object.keys( mandatoryProperties );
+    const mandatoryKeys : any = Object.keys( mandatoryProperties );
 
     for ( const key of mandatoryKeys ) {
       if ( !config[ key ] || typeof config[ key ] !== mandatoryProperties[ key ] ) {
@@ -23,8 +23,9 @@ class Config {
     return config;
   }
 
-  private readConfigFile() {
-    const configFile = path.resolve( args.c || args.config || './wallboard.json' );
+  private readConfigFile() : any {
+    const configFile = path.resolve( args.c || args.config
+      || ( process.env.NODE_ENV === 'development' ? './config.json' : './wallboard.json' ) );
     const exists = fs.existsSync( configFile );
 
     if ( !exists ) {
