@@ -27,6 +27,17 @@ const pulseKeyframes = keyframes`
   }
 `;
 
+// Defining the width of the hearts
+// Everything under 20% should get 0 hearts.
+const healthGroupWidth = [
+  0,
+  35,
+  51.65,
+  70,
+  85.45,
+  100,
+];
+
 const ScreenBuildJobProgressStyled = styled.div`
   border-radius: .25em;
   overflow: hidden;
@@ -120,6 +131,9 @@ const ScreenBuildJobStyled = styled.div`
       namePrefix = '';
     }
 
+    const healthGroup = Math.round( ( props.health - ( props.health % 20 ) ) / 20 );
+    const healthWidth = healthGroupWidth[ healthGroup ];
+
     return `
       background: ${ color };
       box-shadow: 0 .25em 0 ${ polished.shade( .8, color ) };
@@ -154,7 +168,7 @@ const ScreenBuildJobStyled = styled.div`
           content: '';
           display: inline-block;
           float: left;
-          width: ${ props.health }%;
+          width: ${ healthWidth }%;
           height: 1.5em;
           background: ${ polished.lighten( .1, colors.red ) };
           clip-path: url( #hearts );
