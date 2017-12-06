@@ -1,6 +1,5 @@
 <!--
   Thank you so much for filing an issue to this project.
-
   Please take your time and fill out this short form.
 -->
 
