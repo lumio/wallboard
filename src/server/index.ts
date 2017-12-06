@@ -7,6 +7,7 @@ if ( process.env.NODE_ENV === 'development' ) {
   process.on( 'unhandledRejection', r => console.log( r ) );
 }
 
+import eventsHandler from './lib/EventsHandler';
 import Config from './lib/Config';
 import PluginJenkins from './plugins/Jenkins';
 
@@ -33,8 +34,9 @@ jenkins.on( 'change', ( data ) => {
   broadcast( JSON.stringify( { type: 'change', data } ) );
 } );
 
-jenkins.on( 'build-status', ( name, building, status ) => {
-  broadcast( JSON.stringify( { name, building, status } ) );
+jenkins.on( 'build-status-change', ( name, building, status ) => {
+  eventsHandler( config, name, building, status );
+  broadcast( JSON.stringify( { type: 'build-status-change', name, building, status } ) );
 } );
 
 jenkins.on( 'error', ( error ) => {
