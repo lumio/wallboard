@@ -6,6 +6,14 @@
   "bin": {
     "wallboard": "wallboard.js"
   },
+  "keywords": [
+    "build-status",
+    "jenkins",
+    "continuous-integration",
+    "continuous-deployment",
+    "continuous-testing",
+    "wallboard"
+  ],
   "dependencies": {
     "chalk": "1.1.3",
     "charm": "^1.0.2",
