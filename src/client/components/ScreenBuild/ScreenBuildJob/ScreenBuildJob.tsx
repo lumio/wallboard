@@ -1,11 +1,40 @@
 import * as React from 'react';
 
 import {
+  ScreenBuildJobWithProgressStateType,
+} from './types';
+
+import {
   ScreenBuildJobStyled,
   ScreenBuildJobProgressStyled,
 } from './styles';
 
-const ScreenBuildJob : React.StatelessComponent<any> = ( props : any ) => {
+class ScreenBuildJobWithProgress extends React.Component<any, ScreenBuildJobWithProgressStateType> {
+  timer : any;
+
+  constructor( props : any ) {
+    super( props );
+    this.state = {
+      currentTimestamp: Date.now(),
+    };
+
+    this.timer = setInterval( () => {
+      this.setState( { currentTimestamp: Date.now() } );
+    }, 1500 );
+  }
+
+  componentWillUnmount() {
+    if ( this.timer ) {
+      clearInterval( this.timer );
+    }
+  }
+
+  render() {
+    return <ScreenBuildJobStateless { ...this.props } />;
+  }
+}
+
+const ScreenBuildJobStateless : React.StatelessComponent<any> = ( props : any ) => {
   const job = props.data;
 
   let buildProcess = '';
@@ -38,6 +67,14 @@ const ScreenBuildJob : React.StatelessComponent<any> = ( props : any ) => {
       />
     </ScreenBuildJobStyled>
   );
+};
+
+const ScreenBuildJob : React.StatelessComponent<any> = ( props : any ) => {
+  if ( props.data && props.data.building ) {
+    return <ScreenBuildJobWithProgress { ...props } />;
+  }
+
+  return <ScreenBuildJobStateless { ...props } />;
 };
 
 export default ScreenBuildJob;

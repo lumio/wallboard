@@ -20,7 +20,12 @@ interface ScreenBuildJobProgressStyledPropsType {
   status : string;
 }
 
+interface ScreenBuildJobWithProgressStateType {
+  currentTimestamp : number;
+}
+
 export {
   ScreenBuildJobStyledPropsType,
   ScreenBuildJobProgressStyledPropsType,
+  ScreenBuildJobWithProgressStateType,
 };
