@@ -38,7 +38,7 @@ const ScreenBuildJobStateless : React.StatelessComponent<any> = ( props : any ) 
   const job = props.data;
 
   let buildProcess = '';
-  let percentage = 100;
+  let percentage = 0;
   if ( job.building && job.build && job.build.timestamp && job.build.estimatedDuration ) {
     const elapsedTime = Date.now() - job.build.timestamp;
     percentage = Math.min( ( elapsedTime / job.build.estimatedDuration ) * 100, 100 );
