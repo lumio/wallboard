@@ -7,7 +7,7 @@ import {
 } from './types';
 
 const getBaseColor = ( props : any ) => {
-  if ( !props.enabled ) {
+  if ( !props.enabled || !props.status || props.status === 'unknown' || !props.health ) {
     return colors.gray;
   }
   else if ( props.lastBuildFailed || props.status === 'failed' ) {
