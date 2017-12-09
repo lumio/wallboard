@@ -16,7 +16,7 @@ interface JenkinsJobInfoType {
   enabled? : boolean;
   name? : string;
   displayName? : string;
-  status? : 'successful' | 'failed' | 'unstable' | 'aborted' | 'disabled';
+  status? : 'successful' | 'failed' | 'unstable' | 'aborted' | 'disabled' | 'notbuilt' | 'unknown';
   health? : number;
   inQueue? : boolean;
   lastBuildFailed? : boolean;

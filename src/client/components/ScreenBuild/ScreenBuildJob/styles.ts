@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import * as polished from 'polished';
 import colors from '../../../colors';
 import {
@@ -7,7 +7,7 @@ import {
 } from './types';
 
 const getBaseColor = ( props : any ) => {
-  if ( !props.enabled ) {
+  if ( !props.enabled || !props.status || props.status === 'unknown' || !props.health ) {
     return colors.gray;
   }
   else if ( props.lastBuildFailed || props.status === 'failed' ) {
@@ -16,16 +16,6 @@ const getBaseColor = ( props : any ) => {
 
   return polished.mix( props.health / 100, colors.green, colors.red );
 };
-
-const pulseKeyframes = keyframes`
-  from {
-    transform: scale( .98 );
-  }
-
-  to {
-    transform: scale( 1.1 );
-  }
-`;
 
 // Defining the width of the hearts
 // Everything under 20% should get 0 hearts.
@@ -70,7 +60,7 @@ const ScreenBuildJobProgressStyled = styled.div`
         height: 1em;
         background: ${ progressBaseColor };
         width: ${ props.progress }%;
-        transition: width .5s ease-out;
+        ${ props.visible ? 'transition: width .5s ease-out;' : '' };
       }
 
       &::after {
@@ -218,10 +208,6 @@ const ScreenBuildJobStyled = styled.div`
       ` : '' }
     `;
   } }
-
-  ${ ( props : ScreenBuildJobStyledPropsType ) => props.building ? `
-    animation: ${ pulseKeyframes } 2s ease-in-out infinite alternate;
-  ` : '' }
 `;
 
 export {

@@ -36,6 +36,8 @@ const statusMap = {
   aborted_anime: 'aborted',
   disabled: 'disabled',
   disabled_anime: 'disabled',
+  notbuilt: 'notbuilt',
+  notbuilt_anime: 'notbuilt',
 };
 
 export default class PluginJenkins extends EventEmitter {
@@ -61,8 +63,16 @@ export default class PluginJenkins extends EventEmitter {
     this.cron.on( 'data', ( data : any, config : any ) => {
       this.processResponse( data, config );
     } );
-    this.cron.on( 'error', ( error : any ) => {
-      this.emit( 'error', error );
+    this.cron.on( 'error', ( error : any, config : any ) => {
+      const isFetchError = error && error.name === 'FetchError';
+      const isJob = config.data && config.data.isJob;
+      if ( isFetchError && isJob ) {
+        this.deleteItem( config.data.reference );
+        this.emitChange();
+      }
+      else {
+        this.emit( 'error', error );
+      }
     } );
 
     this.addItem( {
@@ -108,7 +118,7 @@ export default class PluginJenkins extends EventEmitter {
       enabled: data.buildable,
       name: data.name,
       displayName: data.displayName,
-      status: ( data.color && statusMap[ data.color ] ) || undefined,
+      status: ( data.color && statusMap[ data.color ] ) || 'unknown',
       health: this.calculateHealth( data.healthReport ),
       inQueue: data.inQueue,
       lastBuildFailed: lastFailedBuild === lastBuildNumber,
@@ -152,15 +162,22 @@ export default class PluginJenkins extends EventEmitter {
       url,
     };
 
+    const selectOldBuildInfo = this.collection.getIn( config.data.reference );
+    const oldBuildInfo = selectOldBuildInfo ? selectOldBuildInfo.toJS() : {};
     this.mergeValues( config.data.reference, buildInfo );
+
+    if ( !selectOldBuildInfo
+      || ( buildInfo.building !== oldBuildInfo.building )
+      || ( buildInfo.status !== oldBuildInfo.status )
+      || ( buildInfo.estimatedDuration !== oldBuildInfo.estimatedDuration ) ) {
+      this.emitChange();
+    }
 
     if ( !data.building ) {
       this.emit( 'build-completed', buildInfo.name, buildInfo );
       this.cron.remove( url );
       this.collection = this.collection.setIn( config.data.reference, Immutable.Map() );
     }
-
-    this.emitChange();
   }
 
   private addBuildWatchIfNeeded( data : any, config : any, jobInfo : JenkinsJobInfoType ) {
@@ -280,10 +297,13 @@ export default class PluginJenkins extends EventEmitter {
     const newJobList = this.prepareRawJobs( data.jobs );
     const newJobNames = Object.keys( newJobList );
 
+    let jobsRemoved = false;
+
     // Remove stale jobs
     for ( const name of formerJobNames ) {
       if ( !newJobList[ name ] ) {
-        this.removeJob( formerJobList[ name ] );
+        this.deleteItem( [ ...reference, name ] );
+        jobsRemoved = true;
       }
     }
 
@@ -295,15 +315,21 @@ export default class PluginJenkins extends EventEmitter {
 
       if ( !formerJobList[ name ] ) {
         const jobItem = newJobList[ name ];
+        const isJob = jobItem.jobs === undefined;
         const item = {
           url: jobItem.url,
           nextRun: timeouts[ jobItem.type ],
           data: {
             reference: [ ...reference, name ],
+            isJob,
           }
         };
         this.addItem( item );
       }
+    }
+
+    if ( jobsRemoved ) {
+      this.emitChange();
     }
   }
 
@@ -314,8 +340,10 @@ export default class PluginJenkins extends EventEmitter {
     this.collection = this.collection.setIn( [ ...item.data.reference, 'url' ], url );
   }
 
-  private removeJob( data : any ) {
-    this.cron.remove( data.url );
+  private deleteItem( reference : string[] ) {
+    const item = this.collection.getIn( reference );
+    this.cron.remove( item.get( 'url' ) );
+    this.collection = this.collection.deleteIn( reference );
   }
 
   private emitChange() {

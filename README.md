@@ -1,6 +1,8 @@
 wallboard
 =========
 
+![wallboard screenshot](https://github.com/lumio/wallboard/blob/develop/media/wallboard.png?raw=true)
+
 **Hello there 😊 you are a little early. This README is not finished yet, as
 this package is still in beta.**
 
@@ -39,4 +41,3 @@ Example `config.json` file
   "filter": [ "pattern2" ]
 }
 ```
-
