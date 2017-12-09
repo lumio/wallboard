@@ -57,7 +57,7 @@ class App extends React.Component<{}, AppStateType> {
       }
       catch ( e ) {
         this.setState( {
-          error: e,
+          error: typeof e !== 'string' ? e.toString() : e,
           pending: false,
         } );
       }

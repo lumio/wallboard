@@ -82,7 +82,7 @@ export default class CronWorker extends EventEmitter {
     fetch( url )
       .then( ( response : any ) => response[ responseFormat ]() )
       .then( ( data : any ) => this.emit( 'data', data, item.config ) )
-      .catch( ( error : any ) => this.emit( 'error', error ) )
+      .catch( ( error : any ) => this.emit( 'error', error, item.config ) )
       .then( () => {
         if ( this.collection[ id ] ) {
           this.collection[ id ].busy = false;
