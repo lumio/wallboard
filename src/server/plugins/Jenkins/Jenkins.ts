@@ -146,15 +146,22 @@ export default class PluginJenkins extends EventEmitter {
       url,
     };
 
+    const selectOldBuildInfo = this.collection.getIn( config.data.reference );
+    const oldBuildInfo = selectOldBuildInfo ? selectOldBuildInfo.toJS() : {};
     this.mergeValues( config.data.reference, buildInfo );
+
+    if ( !selectOldBuildInfo
+      || ( buildInfo.building !== oldBuildInfo.building )
+      || ( buildInfo.status !== oldBuildInfo.status )
+      || ( buildInfo.estimatedDuration !== oldBuildInfo.estimatedDuration ) ) {
+      this.emitChange();
+    }
 
     if ( !data.building ) {
       this.emit( 'build-completed', buildInfo.name, buildInfo );
       this.cron.remove( url );
       this.collection = this.collection.setIn( config.data.reference, Immutable.Map() );
     }
-
-    this.emitChange();
   }
 
   private addBuildWatchIfNeeded( data : any, config : any, jobInfo : JenkinsJobInfoType ) {
