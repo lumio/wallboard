@@ -36,6 +36,8 @@ const statusMap = {
   aborted_anime: 'aborted',
   disabled: 'disabled',
   disabled_anime: 'disabled',
+  notbuilt: 'notbuilt',
+  notbuilt_anime: 'notbuilt',
 };
 
 export default class PluginJenkins extends EventEmitter {
