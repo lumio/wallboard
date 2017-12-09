@@ -34,7 +34,7 @@ jenkins.on( 'change', ( data ) => {
 } );
 
 jenkins.on( 'build-status', ( name, building, status ) => {
-  broadcast( JSON.stringify( { name, building, status } ) );
+  broadcast( JSON.stringify( { type: 'build-status', name, building, status } ) );
 } );
 
 jenkins.on( 'error', ( error ) => {

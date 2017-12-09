@@ -63,8 +63,16 @@ export default class PluginJenkins extends EventEmitter {
     this.cron.on( 'data', ( data : any, config : any ) => {
       this.processResponse( data, config );
     } );
-    this.cron.on( 'error', ( error : any ) => {
-      this.emit( 'error', error );
+    this.cron.on( 'error', ( error : any, config : any ) => {
+      const isFetchError = error && error.name === 'FetchError';
+      const isJob = config.data && config.data.isJob;
+      if ( isFetchError && isJob ) {
+        this.deleteItem( config.data.reference );
+        this.emitChange();
+      }
+      else {
+        this.emit( 'error', error );
+      }
     } );
 
     this.addItem( {
@@ -283,10 +291,13 @@ export default class PluginJenkins extends EventEmitter {
     const newJobList = this.prepareRawJobs( data.jobs );
     const newJobNames = Object.keys( newJobList );
 
+    let jobsRemoved = false;
+
     // Remove stale jobs
     for ( const name of formerJobNames ) {
       if ( !newJobList[ name ] ) {
-        this.removeJob( formerJobList[ name ] );
+        this.deleteItem( [ ...reference, name ] );
+        jobsRemoved = true;
       }
     }
 
@@ -298,15 +309,21 @@ export default class PluginJenkins extends EventEmitter {
 
       if ( !formerJobList[ name ] ) {
         const jobItem = newJobList[ name ];
+        const isJob = jobItem.jobs === undefined;
         const item = {
           url: jobItem.url,
           nextRun: timeouts[ jobItem.type ],
           data: {
             reference: [ ...reference, name ],
+            isJob,
           }
         };
         this.addItem( item );
       }
+    }
+
+    if ( jobsRemoved ) {
+      this.emitChange();
     }
   }
 
@@ -317,8 +334,10 @@ export default class PluginJenkins extends EventEmitter {
     this.collection = this.collection.setIn( [ ...item.data.reference, 'url' ], url );
   }
 
-  private removeJob( data : any ) {
-    this.cron.remove( data.url );
+  private deleteItem( reference : string[] ) {
+    const item = this.collection.getIn( reference );
+    this.cron.remove( item.get( 'url' ) );
+    this.collection = this.collection.deleteIn( reference );
   }
 
   private emitChange() {
