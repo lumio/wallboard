@@ -39,7 +39,13 @@ const ScreenBuildJobStateless : React.StatelessComponent<any> = ( props : any ) 
 
   let buildProcess = '';
   let percentage = 100;
-  if ( job.building && job.build && job.build.timestamp && job.build.estimatedDuration ) {
+  const { building, build } = job;
+  if ( job.status !== 'notbuilt'
+    && building
+    && build
+    && build.timestamp
+    && build.estimatedDuration
+  ) {
     const elapsedTime = Date.now() - job.build.timestamp;
     percentage = Math.min( ( elapsedTime / job.build.estimatedDuration ) * 100, 100 );
     buildProcess = `(${ percentage.toFixed( 0 ) }%)`;
