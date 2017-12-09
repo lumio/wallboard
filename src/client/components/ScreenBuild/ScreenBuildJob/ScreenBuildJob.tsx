@@ -38,7 +38,7 @@ const ScreenBuildJobStateless : React.StatelessComponent<any> = ( props : any ) 
   const job = props.data;
 
   let buildProcess = '';
-  let percentage = 100;
+  let percentage = 0;
   const { building, build } = job;
   if ( job.status !== 'notbuilt'
     && building
