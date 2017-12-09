@@ -108,7 +108,7 @@ export default class PluginJenkins extends EventEmitter {
       enabled: data.buildable,
       name: data.name,
       displayName: data.displayName,
-      status: ( data.color && statusMap[ data.color ] ) || undefined,
+      status: ( data.color && statusMap[ data.color ] ) || 'unknown',
       health: this.calculateHealth( data.healthReport ),
       inQueue: data.inQueue,
       lastBuildFailed: lastFailedBuild === lastBuildNumber,
