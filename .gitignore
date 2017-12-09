@@ -21,3 +21,4 @@ yarn-debug.log*
 yarn-error.log*
 
 config.json
+config.local.json
