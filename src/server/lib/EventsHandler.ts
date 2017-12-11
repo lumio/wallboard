@@ -1,5 +1,7 @@
-import * as fetch from 'node-fetch';
+import { URL } from 'url';
 import { exec } from 'child_process';
+import fetch from 'node-fetch';
+
 import * as debug from 'debug';
 const log = debug( 'wallboard:events-handler' );
 const logShell = debug( 'wallboard:events-handler:shell' );
@@ -18,7 +20,13 @@ function isUrl( s : string ) {
 }
 
 function fetchUrl( url : string ) {
-
+  fetch( url )
+    .then( ( res ) => {
+      logFetch( `Fetching ${ url }: ${ res.status } ${ res.statusText }` );
+    } )
+    .catch( ( err ) => {
+      logFetch( `Fetching ${ url }: ${ err }` );
+    } );
 }
 
 function runSingleCommand( command : string ) {
@@ -77,8 +85,7 @@ function EventsHandler( config : any, jobName : string, building : boolean, stat
   if ( specificCommands ) {
     runCommandBlock( specificCommands, status );
   }
-
-  if ( genericCommands ) {
+  else if ( genericCommands ) {
     runCommandBlock( genericCommands, status );
   }
 }

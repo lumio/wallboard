@@ -40,14 +40,22 @@ Example `config.json` file
   "whitelist": [ "pattern1", "pattern2" ],
   "filter": [ "pattern2" ],
   "events": {
-    "build-start": {
-      "all": "command or url"
-    },
+    // There are two supported events: build-start and build-finish
     "build-finish": {
       "all": "command or url that always runs when build finished",
       "successful": "command or url on success",
       "failed": "command or url when job failed"
+    },
+
+    "build-start": {
+      "all": "command or url"
+    },
+
+    // Adding :<job-name> to the event will override the default event
+    "build-finish:job-name": {
+      "successful": "command or url on success"
     }
+
   }
 }
 ```
