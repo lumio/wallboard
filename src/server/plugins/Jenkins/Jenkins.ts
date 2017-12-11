@@ -133,9 +133,15 @@ export default class PluginJenkins extends EventEmitter {
 
     if ( this.checkIfFolder( data ) === false ) {
       const oldJobBuilding = oldJobInfo.get( 'building' );
-      if ( oldJobBuilding !== jobInfo.building ) {
+      if ( oldJobBuilding !== undefined && oldJobBuilding !== jobInfo.building ) {
         this.emitChange();
-        this.emit( 'build-status', jobInfo.name, jobInfo.building, jobInfo.status );
+        this.emit( 'build-status-change', jobInfo.name, jobInfo.building, jobInfo.status );
+        if ( !jobInfo.building ) {
+          this.emit( 'build-finish', jobInfo.name, jobInfo.status );
+        }
+        else {
+          this.emit( 'build-start', jobInfo.name, jobInfo.status );
+        }
       }
       this.updateInterval( config.url, jobInfo.building );
     }
