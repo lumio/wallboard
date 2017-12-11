@@ -38,6 +38,16 @@ Example `config.json` file
 {
   "ci": "https://jenkins",
   "whitelist": [ "pattern1", "pattern2" ],
-  "filter": [ "pattern2" ]
+  "filter": [ "pattern2" ],
+  "events": {
+    "build-start": {
+      "all": "command or url"
+    },
+    "build-finish": {
+      "all": "command or url that always runs when build finished",
+      "successful": "command or url on success",
+      "failed": "command or url when job failed"
+    }
+  }
 }
 ```
