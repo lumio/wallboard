@@ -7,6 +7,10 @@ if ( process.env.NODE_ENV === 'development' ) {
   process.on( 'unhandledRejection', r => console.log( r ) );
 }
 
+if ( !process.env.DEBUG ) {
+  process.env.DEBUG = 'wallboard*';
+}
+
 import eventsHandler from './lib/EventsHandler';
 import Config from './lib/Config';
 import PluginJenkins from './plugins/Jenkins';
