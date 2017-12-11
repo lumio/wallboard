@@ -45,8 +45,8 @@ Example `config.json` file
   "blacklist": [ "pattern1", "pattern2" ],
 
   // Events allow you to run certain commands or call any APIs when a job is
-  // starting or finishes
-  // These two events are called build-start and build-finish
+  // starting or finishes.
+  // These two events are called build-start and build-finish.
   "events": {
     "build-finish": {
       "all": "command or url that always runs when build finished",
