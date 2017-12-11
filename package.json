@@ -1,6 +1,6 @@
 {
   "name": "wallboard",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "license": "GPL-3.0",
   "repository": "lumio/wallboard",
   "bin": {
