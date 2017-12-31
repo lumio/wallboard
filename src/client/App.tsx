@@ -36,6 +36,8 @@ const AppStyled = styled.div`
 
 class App extends React.Component<{}, AppStateType> {
   socket : WebSocket;
+  updateTimer : any;
+
   constructor( props : {} ) {
     super( props );
 
@@ -50,14 +52,17 @@ class App extends React.Component<{}, AppStateType> {
       try {
         const data = JSON.parse( event.data );
         if ( data.type === 'error' ) {
-          throw new Error( data.error );
+          throw {
+            error: data.error,
+            message: data.message,
+          };
         }
 
         this.readData( data );
       }
       catch ( e ) {
         this.setState( {
-          error: typeof e !== 'string' ? e.toString() : e,
+          error: typeof e !== 'string' ? JSON.stringify( e, null, 2 ) : e,
           pending: false,
         } );
       }
@@ -74,6 +79,8 @@ class App extends React.Component<{}, AppStateType> {
       this.setState( {
         pending: true,
       } );
+
+      this.setDataUpdateTimeout();
     };
   }
 
@@ -93,12 +100,34 @@ class App extends React.Component<{}, AppStateType> {
     } );
   }
 
+  setDataUpdateTimeout() {
+    if ( this.updateTimer ) {
+      clearInterval( this.updateTimer );
+    }
+
+    setInterval( () => {
+      if ( this.socket.readyState !== 1 ) {
+        return;
+      }
+
+      this.socket.send( 'update' );
+    }, 60000 );
+  }
+
+  setRefreshTimeout() {
+    setTimeout( () => {
+      location.reload( false );
+    }, 15000 );
+  }
+
   render() {
     if ( this.state.error ) {
+      this.setRefreshTimeout();
       return (
         <AppStyled className='error'>
           <h1>Error</h1>
           <pre>{ this.state.error }</pre>
+          <p>Will refresh in 15 seconds...</p>
         </AppStyled>
       );
     }

@@ -317,13 +317,13 @@ export default class PluginJenkins extends EventEmitter {
     const newJobList = this.prepareRawJobs( data.jobs );
     const newJobNames = Object.keys( newJobList );
 
-    let jobsRemoved = false;
+    let jobListChanged = false;
 
     // Remove stale jobs
     for ( const name of formerJobNames ) {
       if ( !newJobList[ name ] ) {
         this.deleteItem( [ ...reference, name ] );
-        jobsRemoved = true;
+        jobListChanged = true;
       }
     }
 
@@ -345,10 +345,11 @@ export default class PluginJenkins extends EventEmitter {
           }
         };
         this.addItem( item );
+        jobListChanged = true;
       }
     }
 
-    if ( jobsRemoved ) {
+    if ( jobListChanged  ) {
       this.emitChange();
     }
   }
