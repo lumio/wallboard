@@ -38,14 +38,15 @@ Example `config.json` file
   // Set the URL to your Jenkins instance
   "ci": "https://jenkins",
 
-  // Either use whitelist to only show jobs with a certain substring in their name
+  // Either use whitelist to only show jobs with a certain
+  // substring in their name
   "whitelist": [ "pattern1", "pattern2" ],
 
   // or use blacklist to filter out certain jobs
   "blacklist": [ "pattern1", "pattern2" ],
 
-  // Events allow you to run certain commands or call any APIs when a job is
-  // starting or finishes.
+  // Events allow you to run certain commands or call any
+  // API when a job is starting or finishes.
   // These two events are called build-start and build-finish.
   "events": {
     "build-finish": {
@@ -58,7 +59,8 @@ Example `config.json` file
       "all": "command or url"
     },
 
-    // Adding :<job-name> to the event will override the default event
+    // Adding :<job-name> to the event will override the
+    // default event
     "build-finish:job-name": {
       "successful": "command or url on success"
     }

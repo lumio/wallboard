@@ -3,7 +3,6 @@ import { exec } from 'child_process';
 import fetch from 'node-fetch';
 
 import * as debug from 'debug';
-const log = debug( 'wallboard:events-handler' );
 const logShell = debug( 'wallboard:events-handler:shell' );
 const logFetch = debug( 'wallboard:events-handler:fetch' );
 

@@ -265,19 +265,39 @@ export default class PluginJenkins extends EventEmitter {
     return this.collection.getIn( reference );
   }
 
-  private isJobAllowed( name : string ) {
+  private isPatternInReference( pattern : string, reference : string[] ) {
+    const lowerPattern = pattern.toLowerCase();
+    const inReference = reference.reduce( ( result : boolean, item : string ) => {
+      if ( result === true ) {
+        return true;
+      }
+
+      const lowerItem = item.toLowerCase();
+      if ( lowerItem.indexOf( lowerPattern ) > -1 ) {
+        return true;
+      }
+
+      return false;
+    }, false );
+
+    return inReference;
+  }
+
+  private isJobAllowed( name : string, reference : string[] ) {
     const whitelist = typeof this.config.whitelist === 'string' ? [ this.config.whitelist ] : this.config.whitelist || [];
     const blacklist = typeof this.config.blacklist === 'string' ? [ this.config.blacklist ] : this.config.blacklist || [];
     const lowerName = name.toLowerCase();
 
     for ( const pattern of whitelist ) {
-      if ( lowerName.indexOf( pattern.toLowerCase() ) === -1 ) {
+      if ( lowerName.indexOf( pattern.toLowerCase() ) === -1
+        && !this.isPatternInReference( pattern, reference ) ) {
         return false;
       }
     }
 
     for ( const pattern of blacklist ) {
-      if ( lowerName.indexOf( pattern.toLowerCase() ) === -1 ) {
+      if ( lowerName.indexOf( pattern.toLowerCase() ) === -1
+        && !this.isPatternInReference( pattern, reference ) ) {
         return true;
       }
     }
@@ -309,7 +329,7 @@ export default class PluginJenkins extends EventEmitter {
 
     // Add fetch job to new jobs
     for ( const name of newJobNames ) {
-      if ( !this.isJobAllowed( name ) ) {
+      if ( !this.isJobAllowed( name, reference ) ) {
         continue;
       }
 
