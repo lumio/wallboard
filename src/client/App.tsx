@@ -53,8 +53,8 @@ class App extends React.Component<{}, AppStateType> {
         const data = JSON.parse( event.data );
         if ( data.type === 'error' ) {
           throw {
-            error: data.error,
             message: data.message,
+            error: data.error,
           };
         }
 
@@ -106,7 +106,7 @@ class App extends React.Component<{}, AppStateType> {
     }
 
     setInterval( () => {
-      if ( this.socket.readyState !== 1 ) {
+      if ( this.socket.readyState !== WebSocket.OPEN ) {
         return;
       }
 
