@@ -11,6 +11,10 @@ const mandatoryProperties = {
 class Config {
   load() : any {
     const config = this.readConfigFile();
+    if ( config.error ) {
+      return config;
+    }
+
     const mandatoryKeys : any = Object.keys( mandatoryProperties );
 
     for ( const key of mandatoryKeys ) {
@@ -41,7 +45,10 @@ class Config {
     catch ( e ) {
       console.error( `Error loading ${ configFile }:` );
       console.error( e );
-      return process.exit( 1 );
+      config = {
+        message: 'Config error',
+        error: e.toString(),
+      };
     }
 
     return config;

@@ -16,10 +16,6 @@ import Config from './lib/Config';
 import PluginJenkins from './plugins/Jenkins';
 
 const config = Config.load();
-const jenkins = new PluginJenkins( config.ci, {
-  whitelist: config.whitelist,
-  blacklist: config.blacklist,
-} );
 
 const app = express();
 app.use( '/', express.static( path.join( __dirname, './static' ) ) );
@@ -34,27 +30,53 @@ const broadcast = ( data : any ) => {
   } );
 };
 
-jenkins.on( 'change', ( data ) => {
+const jenkins = config.error ? false : new PluginJenkins( config.ci, {
+  whitelist: config.whitelist,
+  blacklist: config.blacklist,
+} );
+
+const jenkinsWrapper = {
+  get: () => {
+    if ( config.error ) {
+      return config;
+    }
+
+    return jenkins ? jenkins.get() : null;
+  },
+
+  on: ( t : string, c : any ) => jenkins ? jenkins.on( t, c ) : null,
+};
+
+const sendUpdate = ( ws : WebSocket ) => {
+  const data = jenkinsWrapper.get();
+
+  if ( data.error ) {
+    return ws.send( JSON.stringify( { type: 'error', message: data.message, error: data.error } ) );
+  }
+  ws.send( JSON.stringify( { type: 'change', data } ) );
+};
+
+jenkinsWrapper.on( 'change', ( data : any ) => {
   broadcast( JSON.stringify( { type: 'change', data } ) );
 } );
 
-jenkins.on( 'build-status-change', ( name, building, status ) => {
+jenkinsWrapper.on( 'build-status-change', ( name : string, building : boolean, status : string ) => {
   eventsHandler( config, name, building, status );
   broadcast( JSON.stringify( { type: 'build-status-change', name, building, status } ) );
 } );
 
-jenkins.on( 'error', ( error ) => {
+jenkinsWrapper.on( 'error', ( error : any ) => {
   broadcast( JSON.stringify( { type: 'error', error } ) );
 } );
 
 wss.on( 'connection', ( ws : WebSocket ) => {
   ws.on( 'message', ( data : any ) => {
     if ( data === 'update' ) {
-      ws.send( JSON.stringify( { type: 'change', data: jenkins.get() } ) );
+      sendUpdate( ws );
     }
   } );
 
-  ws.send( JSON.stringify( { type: 'change', data: jenkins.get() } ) );
+  sendUpdate( ws );
 } );
 
 server.listen( process.env.PORT || 5000, () => {
