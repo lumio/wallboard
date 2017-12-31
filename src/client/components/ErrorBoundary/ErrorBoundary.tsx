@@ -40,12 +40,24 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryPropsTyp
     } );
   }
 
+  renderErrorMessage() {
+    if ( typeof this.state.error === 'string' ) {
+      return <p>{ this.state.error }</p>;
+    }
+
+    return (
+      <pre>
+        { JSON.stringify( this.state.error, null, 2 ) }
+      </pre>
+    );
+  }
+
   render() {
     if ( this.state.error || this.state.errorInfo || this.state.errorProps ) {
       return (
         <div className='error failed-component'>
           <h1>Oops!</h1>
-          <p>{ this.state.error.toString() }</p>
+          { this.renderErrorMessage() }
           { this.state.errorProps ? (
               <pre>{ JSON.stringify( this.state.errorProps, null, 2 ) }</pre>
             ) : null }

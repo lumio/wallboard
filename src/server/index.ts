@@ -49,7 +49,7 @@ jenkins.on( 'error', ( error ) => {
 
 wss.on( 'connection', ( ws : WebSocket ) => {
   ws.on( 'message', ( data : any ) => {
-    if ( data.update ) {
+    if ( data === 'update' ) {
       ws.send( JSON.stringify( { type: 'change', data: jenkins.get() } ) );
     }
   } );
